@@ -2,7 +2,15 @@
 
 this is a toolkit for generate fake data like mockjs
 
-> base on https://github.com/brianvoe/gofakeit
+## cli
+
+> go install github.com/wwqdrh/mockgo/cmd/mockgo@latest
+
+```bash
+mockgo -path ./api
+```
+
+use this command, will launch a http server which url is filepath, and content is mock data
 
 ## usage
 
