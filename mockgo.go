@@ -2,6 +2,7 @@ package mockgo
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -84,6 +85,25 @@ func mockSingle(value gjson.Result) interface{} {
 			return gofakeit.Date().String()
 		} else if valueStr == "@cname" {
 			return gofakeit.FirstName()
+		} else if strings.HasPrefix(valueStr, "@natural") {
+			// 从@natural(9781782910284, 9981782910284)格式解析最小和最大值, 并且返回为字符串格式
+			valueStr = strings.TrimPrefix(valueStr, "@natural")
+			valueStr = valueStr[1 : len(valueStr)-1]
+			split := strings.Split(valueStr, ",")
+			if len(split) != 2 {
+				return fmt.Sprint(gofakeit.Int64())
+			}
+			min, err := strconv.Atoi(strings.TrimSpace(split[0]))
+			if err != nil {
+				logger.DefaultLogger.Warn(err.Error())
+				return fmt.Sprint(gofakeit.Int64())
+			}
+			max, err := strconv.Atoi(strings.TrimSpace(split[1]))
+			if err != nil {
+				logger.DefaultLogger.Warn(err.Error())
+				return fmt.Sprint(gofakeit.Int64())
+			}
+			return fmt.Sprint(gofakeit.IntRange(min, max))
 		} else if strings.HasPrefix(valueStr, "@integer") {
 			// 从@integer(60, 100)格式解析最小和最大值
 			valueStr = strings.TrimPrefix(valueStr, "@integer")

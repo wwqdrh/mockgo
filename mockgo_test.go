@@ -18,6 +18,7 @@ func TestGenerate(t *testing.T) {
 		],
       "pubdate": "@date",
 	  "price": "@float(60, 100, 2, 2)",
+	  "isbn": "@natural(9781782910284, 9981782910284)",
       "pages": "@integer(60, 100)",
 	  "images|+1" : [
 	 	"https://i.loli.net/2021/01/18/LSFhuWVlMGcAUOB.png",
@@ -44,6 +45,10 @@ func TestGenerate(t *testing.T) {
 		return
 	}
 	if val := gjson.Get(mockData, "data.1.price"); val.Type != gjson.String || len(val.Str) != 5 {
+		t.Error("Generate data.price fail")
+		return
+	}
+	if val := gjson.Get(mockData, "data.1.isbn"); val.Type != gjson.String || len(val.Str) != 13 {
 		t.Error("Generate data.price fail")
 		return
 	}
