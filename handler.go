@@ -18,26 +18,27 @@ type JsonMockHandler struct {
 // 的所在路径作为url，然后文件内容作为mock数据
 // 使用http注册url以及返回对应的mock数据
 
-func GetHandler(p string) []*JsonMockHandler {
+func GetHandler(p string, cors bool) []*JsonMockHandler {
 	result := getJsonList(p)
 	for _, item := range result {
-		item.Handler = handlerMock(*item)
+		item.Handler = handlerMock(*item, cors)
 	}
 	return result
 }
 
-func handlerMock(m JsonMockHandler) http.HandlerFunc {
+func handlerMock(m JsonMockHandler, cors bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			w.WriteHeader(http.StatusMethodNotAllowed)
-			return
-		}
 		mockData, err := Generate(m.Mock)
 		if err != nil {
 			logger.DefaultLogger.Error(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		} else {
+			if cors {
+				w.Header().Set("Access-Control-Allow-Origin", "*")
+				w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+				w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+			}
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
 			_, _ = w.Write([]byte(mockData))

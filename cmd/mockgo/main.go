@@ -24,8 +24,9 @@ func main() {
 	flag.Parse()
 
 	mux := http.NewServeMux()
-	for _, item := range mockgo.GetHandler(path) {
+	for _, item := range mockgo.GetHandler(path, true) {
 		logger.DefaultLogger.Infox("register url: /%s", nil, item.Url)
+
 		mux.HandleFunc("/"+item.Url, item.Handler)
 	}
 	http.ListenAndServe(":"+strconv.Itoa(port), mux)
