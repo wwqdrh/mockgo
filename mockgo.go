@@ -82,7 +82,8 @@ func mockSingle(value gjson.Result) interface{} {
 		if valueStr == "@increment" {
 			return increment.Int64() - 1
 		} else if valueStr == "@date" {
-			return gofakeit.Date().String()
+			// 格式化为yyyy-mm-dd
+			return gofakeit.Date().Format("2006-01-02")
 		} else if valueStr == "@cname" {
 			return gofakeit.FirstName()
 		} else if strings.HasPrefix(valueStr, "@natural") {
